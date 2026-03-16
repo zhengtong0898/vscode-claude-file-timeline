@@ -1,0 +1,7 @@
+.git/
+.gitignore
+node_modules/
+tests/
+CLAUDE.md
+.claude-port
+*.vsix

@@ -1,0 +1,48 @@
+{
+  "name": "claude-file-timeline",
+  "displayName": "Claude File Timeline",
+  "description": "Receives file changes from Claude via local HTTP API and records them in VSCode Timeline, enabling easy diff review.",
+  "publisher": "zhengtong0898",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhengtong0898/vscode-claude-file-timeline"
+  },
+  "homepage": "https://github.com/zhengtong0898/vscode-claude-file-timeline#readme",
+  "bugs": {
+    "url": "https://github.com/zhengtong0898/vscode-claude-file-timeline/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "timeline",
+    "diff",
+    "file-history"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Claude File Timeline",
+      "properties": {
+        "claudeFileTimeline.httpPort": {
+          "type": "number",
+          "default": 18463,
+          "description": "HTTP server port"
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.70.0"
+  }
+}
