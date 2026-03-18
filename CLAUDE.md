@@ -1,6 +1,8 @@
 ## 文件变更同步到 VSCode Timeline（最高优先级）
 
-完成所有文件编辑后，**必须**将本次修改过的所有文件通过 HTTP API 提交给 claude-file-timeline 插件，使变更记录出现在 VSCode Timeline 中，方便 diff 对比 review。
+在编辑任何文件**之前**，**必须**先将即将修改的所有文件通过 HTTP API 提交给 claude-file-timeline 插件，使插件保存一份编辑前的快照，方便后续 diff 对比。
+
+完成所有文件编辑**之后**，**必须**再次将本次修改过的所有文件提交给插件，使变更记录出现在 VSCode Timeline 中，方便 diff 对比 review。
 
 调用方式：先从工作区根目录的 `.claude-port` 文件读取实际端口号，再对本次会话中所有被 Edit/Write 修改过的文件发送一次 POST 请求：
 
