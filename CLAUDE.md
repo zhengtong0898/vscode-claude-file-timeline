@@ -16,6 +16,13 @@ curl -s --noproxy '*' -X POST http://127.0.0.1:$PORT/sync \
 - 路径必须使用**绝对路径**
 - 一次请求包含所有变更文件，无需逐个发送
 - `--noproxy '*'` 必须携带，避免请求被代理拦截导致同步失败
+- **中文路径处理**: Git Bash 在 Windows 上将 shell 参数经 GBK 编码传给 curl, 导致中文路径乱码. 路径含中文时, **必须**用 `printf` 的 `\uXXXX` 转义写入临时文件, 再 `curl -d @file`:
+  ```bash
+  PORT=$(cat .claude-port) && \
+  printf '{"files":["c:/path/20260319-\u65b0\u95fb\u9a71\u52a8/\u6587\u4ef6.py"]}' > /tmp/sync_payload.json && \
+  curl -s --noproxy '*' -X POST http://127.0.0.1:$PORT/sync \
+    -H "Content-Type: application/json" -d @/tmp/sync_payload.json
+  ```
 - 若请求失败（插件未启动、`.claude-port` 不存在等），仅提示用户，不阻塞后续流程
 
 
