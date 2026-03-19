@@ -47,7 +47,9 @@ code --install-extension claude-file-timeline-0.1.0.vsix
 ````markdown
 ## 文件变更同步到 VSCode Timeline（最高优先级）
 
-完成所有文件编辑后，**必须**将本次修改过的所有文件通过 HTTP API 提交给 claude-file-timeline 插件，使变更记录出现在 VSCode Timeline 中，方便 diff 对比 review。
+在编辑任何文件**之前**，**必须**先将即将修改的所有文件通过 HTTP API 提交给 claude-file-timeline 插件，使插件保存一份编辑前的快照，方便后续 diff 对比。
+
+完成所有文件编辑**之后**，**必须**再次将本次修改过的所有文件提交给插件，使变更记录出现在 VSCode Timeline 中，方便 diff 对比 review。
 
 调用方式：先从工作区根目录的 `.claude-port` 文件读取实际端口号，再对本次会话中所有被 Edit/Write 修改过的文件发送一次 POST 请求：
 
@@ -61,6 +63,13 @@ curl -s --noproxy '*' -X POST http://127.0.0.1:$PORT/sync \
 - 路径必须使用**绝对路径**
 - 一次请求包含所有变更文件，无需逐个发送
 - `--noproxy '*'` 必须携带，避免请求被代理拦截导致同步失败
+- **中文路径处理**: Git Bash 在 Windows 上将 shell 参数经 GBK 编码传给 curl, 导致中文路径乱码. 路径含中文时, **必须**用 `printf` 的 `\uXXXX` 转义写入临时文件, 再 `curl -d @file`:
+  ```bash
+  PORT=$(cat .claude-port) && \
+  printf '{"files":["c:/path/20260319-\u65b0\u95fb\u9a71\u52a8/\u6587\u4ef6.py"]}' > /tmp/sync_payload.json && \
+  curl -s --noproxy '*' -X POST http://127.0.0.1:$PORT/sync \
+    -H "Content-Type: application/json" -d @/tmp/sync_payload.json
+  ```
 - 若请求失败（插件未启动、`.claude-port` 不存在等），仅提示用户，不阻塞后续流程
 
 ## 变更文件列表（最高优先级）
